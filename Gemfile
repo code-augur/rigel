@@ -11,4 +11,5 @@ end
 
 group :development do
   gem 'spring'
+  gem 'paint'
 end
