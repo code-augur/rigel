@@ -70,10 +70,48 @@ CREATE TABLE schema_migrations (
 
 
 --
+-- Name: series; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE series (
+    id integer NOT NULL,
+    data jsonb,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: series_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE series_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: series_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE series_id_seq OWNED BY series.id;
+
+
+--
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY cards ALTER COLUMN id SET DEFAULT nextval('cards_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY series ALTER COLUMN id SET DEFAULT nextval('series_id_seq'::regclass);
 
 
 --
@@ -82,6 +120,14 @@ ALTER TABLE ONLY cards ALTER COLUMN id SET DEFAULT nextval('cards_id_seq'::regcl
 
 ALTER TABLE ONLY cards
     ADD CONSTRAINT cards_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: series_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY series
+    ADD CONSTRAINT series_pkey PRIMARY KEY (id);
 
 
 --
@@ -96,6 +142,20 @@ CREATE INDEX card_data_id_index ON cards USING btree (((data ->> 'id'::text)));
 --
 
 CREATE INDEX index_cards_on_data ON cards USING gin (data);
+
+
+--
+-- Name: index_series_on_data; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_series_on_data ON series USING gin (data);
+
+
+--
+-- Name: series_data_code_index; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX series_data_code_index ON series USING btree (((data ->> 'code'::text)));
 
 
 --
@@ -114,4 +174,8 @@ SET search_path TO "$user",public;
 INSERT INTO schema_migrations (version) VALUES ('20160111012829');
 
 INSERT INTO schema_migrations (version) VALUES ('20160111013426');
+
+INSERT INTO schema_migrations (version) VALUES ('20160111050742');
+
+INSERT INTO schema_migrations (version) VALUES ('20160111050921');
 
